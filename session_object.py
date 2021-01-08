@@ -2,7 +2,7 @@
 # USE WITH THE HTML FILE PROVIDED
 # SEE CODE IN LINE 127
 
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, g
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -17,16 +17,21 @@ app.config.update(
 db = SQLAlchemy(app)
 
 
+@app.before_request
+def some_function():
+    g.string = '<br> This code ran before any request'
+
+
 @app.route('/index')
 @app.route('/')
 def hello_flask():
-    return 'Hello Flask'
+    return 'Hello Flask <br>' + g.string
 
 
 @app.route('/new/')
 def query_string(greeting='hello'):
     query_val = request.args.get('greeting', greeting)
-    return '<h1> the greeting is: {0} </h1>'.format(query_val)
+    return '<h1> the greeting is: {0} </h1>'.format(query_val)+ g.string
 
 
 @app.route('/user')
